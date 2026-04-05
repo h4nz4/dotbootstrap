@@ -1,0 +1,25 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create release bundle
+        run: |
+          mkdir -p dist
+          cp install.sh dist/
+          cp -R lib dist/
+          cp -R configs dist/
+          cp README.md dist/
+          tar -czf dotbootstrap-${GITHUB_REF_NAME}.tar.gz -C dist .
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotbootstrap-${{ github.ref_name }}
+          path: dotbootstrap-${{ github.ref_name }}.tar.gz
