@@ -36,6 +36,11 @@ main() {
       ;;
   esac
 
+  if [ -t 0 ] && [ -n "${SHELL:-}" ] && [ "${SHELL##*/}" != "zsh" ]; then
+    printf '\nStarting a new zsh login shell...\n'
+    exec zsh -l
+  fi
+
   printf '\n  Done.\n\n'
 }
 

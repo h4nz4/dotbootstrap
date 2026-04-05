@@ -56,4 +56,13 @@ count=$(/usr/bin/grep -Fc 'eval "$(starship init zsh)"' "$HOME/.zshrc")
 link_file "$ROOT_DIR/configs/starship.toml" "$HOME/.config/starship.toml"
 [ -L "$HOME/.config/starship.toml" ]
 
+shell_path="${SHELL:-/bin/sh}"
+case "$shell_path" in
+  */zsh)
+    ;;
+  *)
+    [ -n "$shell_path" ]
+    ;;
+esac
+
 printf '%s\n' "ok"
