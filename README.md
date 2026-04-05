@@ -70,8 +70,8 @@ Replace `hanza` with your GitHub owner if different.
 
 ## What it installs
 
-- Debian / Ubuntu: `build-essential`, `git`, `wget`, `curl`, `zsh`, `btop`, `ca-certificates`, `gnupg`, `ripgrep`, `fd-find`, `tmux`, `xclip`, `unzip`
-- Arch: `base-devel`, `git`, `wget`, `curl`, `zsh`, `btop`, `ca-certificates`, `gnupg`, `ripgrep`, `fd`, `tmux`, `xclip`, `unzip`
+- Debian / Ubuntu: `bash`, `build-essential`, `git`, `wget`, `curl`, `zsh`, `btop`, `ca-certificates`, `gnupg`, `ripgrep`, `fd-find`, `tmux`, `xclip`, `unzip`
+- Arch: `bash`, `base-devel`, `git`, `wget`, `curl`, `zsh`, `btop`, `ca-certificates`, `gnupg`, `ripgrep`, `fd`, `tmux`, `xclip`, `unzip`
 - macOS: `git`, `wget`, `curl`, `zsh`, `btop`, `ripgrep`, `fd`, `tmux`, `xclip`, `unzip`, `ca-certificates`, `starship`, `neovim`, `uv`, `nvm`
 
 ## Configured out of the box

@@ -15,10 +15,10 @@ linux_install_base_packages() {
   case "$BOOTSTRAP_OS_ID" in
     debian|ubuntu)
       run_as_root apt-get update
-      run_as_root apt-get install -y build-essential git wget curl zsh btop ca-certificates gnupg ripgrep fd-find tmux xclip unzip
+      run_as_root apt-get install -y bash build-essential git wget curl zsh btop ca-certificates gnupg ripgrep fd-find tmux xclip unzip
       ;;
     arch)
-      run_as_root pacman -Sy --noconfirm --needed base-devel git wget curl zsh btop ca-certificates gnupg ripgrep fd tmux xclip unzip
+      run_as_root pacman -Sy --noconfirm --needed bash base-devel git wget curl zsh btop ca-certificates gnupg ripgrep fd tmux xclip unzip
       ;;
   esac
 }
@@ -94,7 +94,7 @@ uv_bootstrap() {
 
 nvm_bootstrap() {
   if [ ! -d "$HOME/.nvm" ]; then
-    run sh -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | sh"
+    run bash -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash"
   fi
   ensure_line "$HOME/.zshrc" 'export NVM_DIR="$HOME/.nvm"'
   ensure_line "$HOME/.zshrc" '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"'
