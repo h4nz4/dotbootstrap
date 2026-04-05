@@ -25,6 +25,14 @@ _bootstrap_clear_line() {
   printf '\033[2K' 2>/dev/null || printf '\r'
 }
 
+# install.sh uses set -e; kill/wait often return non-zero (dead PID) and must not abort the script.
+_bootstrap_stop_spinner() {
+  step_sp=$1
+  [ -n "$step_sp" ] || return 0
+  kill "$step_sp" 2>/dev/null || true
+  wait "$step_sp" 2>/dev/null || true
+}
+
 run_step() {
   step_msg=$1
   shift
@@ -46,13 +54,12 @@ run_step() {
       done
     ) &
     step_sp=$!
-    trap "kill $step_sp 2>/dev/null; wait $step_sp 2>/dev/null; _bootstrap_clear_line; printf '\n' >&2; exit 130" INT
-    trap "kill $step_sp 2>/dev/null; wait $step_sp 2>/dev/null; _bootstrap_clear_line; printf '\n' >&2; exit 143" TERM
+    trap "_bootstrap_stop_spinner $step_sp; _bootstrap_clear_line; printf '\n' >&2; exit 130" INT
+    trap "_bootstrap_stop_spinner $step_sp; _bootstrap_clear_line; printf '\n' >&2; exit 143" TERM
     # Subshell: install.sh uses set -e, so failures must not abort before we print logs.
     ( "$@" ) >"$step_tmp" 2>&1
     step_ec=$?
-    kill "$step_sp" 2>/dev/null
-    wait "$step_sp" 2>/dev/null
+    _bootstrap_stop_spinner "$step_sp"
     trap - INT TERM
     if [ "$step_ec" -eq 0 ]; then
       _bootstrap_clear_line
