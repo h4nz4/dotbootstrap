@@ -17,13 +17,74 @@ have() {
   command -v "$1" >/dev/null 2>&1
 }
 
+_bootstrap_is_tty() {
+  [ -t 1 ]
+}
+
+_bootstrap_clear_line() {
+  printf '\033[2K' 2>/dev/null || printf '\r'
+}
+
+run_step() {
+  step_msg=$1
+  shift
+  step_tmp=$(mktemp) || die "mktemp failed"
+
+  if _bootstrap_is_tty; then
+    (
+      step_i=0
+      while :; do
+        step_i=$((step_i + 1))
+        case $((step_i % 4)) in
+          1) step_c='|' ;;
+          2) step_c='/' ;;
+          3) step_c='-' ;;
+          0) step_c='.' ;;
+        esac
+        printf '\r  %s %s' "$step_c" "$step_msg"
+        sleep 0.15 >/dev/null 2>&1 || sleep 1
+      done
+    ) &
+    step_sp=$!
+    if "$@" >"$step_tmp" 2>&1; then
+      kill "$step_sp" 2>/dev/null
+      wait "$step_sp" 2>/dev/null
+      _bootstrap_clear_line
+      printf '\r  ✓ %s\n' "$step_msg"
+      rm -f "$step_tmp"
+    else
+      kill "$step_sp" 2>/dev/null
+      wait "$step_sp" 2>/dev/null
+      _bootstrap_clear_line
+      cat "$step_tmp" >&2
+      rm -f "$step_tmp"
+      die "Failed: $step_msg"
+    fi
+  else
+    printf '%s\n' "[bootstrap] $step_msg …"
+    if "$@" >"$step_tmp" 2>&1; then
+      printf '%s\n' "[bootstrap] done: $step_msg"
+      rm -f "$step_tmp"
+    else
+      cat "$step_tmp" >&2
+      rm -f "$step_tmp"
+      die "Failed: $step_msg"
+    fi
+  fi
+}
+
+run_step_live() {
+  step_msg=$1
+  shift
+  printf '%s\n' "  → $step_msg"
+  "$@" || die "Failed: $step_msg"
+}
+
 run() {
-  log "$*"
   "$@"
 }
 
 run_as_root() {
-  log "$*"
   if [ "$(id -u)" -eq 0 ]; then
     "$@"
   else

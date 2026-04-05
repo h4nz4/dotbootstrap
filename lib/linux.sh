@@ -1,24 +1,26 @@
 #!/usr/bin/env sh
 
 linux_bootstrap() {
-  linux_install_base_packages
-  zsh_bootstrap
-  starship_bootstrap
-  nvim_bootstrap
-  uv_bootstrap
-  nvm_bootstrap
-  docker_bootstrap_linux
-  config_bootstrap
+  run_step "Installing packages" linux_install_base_packages
+  run_step_live "Configuring zsh" zsh_bootstrap
+  run_step "Installing Starship" starship_bootstrap
+  run_step "Installing Neovim" nvim_bootstrap
+  run_step "Installing uv" uv_bootstrap
+  run_step "Installing nvm" nvm_bootstrap
+  run_step "Installing Docker" docker_bootstrap_linux
+  run_step "Linking configuration files" config_bootstrap
 }
 
 linux_install_base_packages() {
   case "$BOOTSTRAP_OS_ID" in
     debian|ubuntu)
-      run_as_root apt-get update
-      run_as_root apt-get install -y bash build-essential git wget curl zsh btop ca-certificates gnupg ripgrep fd-find tmux xclip unzip
+      run_as_root env DEBIAN_FRONTEND=noninteractive apt-get -qq update
+      run_as_root env DEBIAN_FRONTEND=noninteractive apt-get -qq install -y \
+        bash build-essential git wget curl zsh btop ca-certificates gnupg ripgrep fd-find tmux xclip unzip
       ;;
     arch)
-      run_as_root pacman -Sy --noconfirm --needed bash base-devel git wget curl zsh btop ca-certificates gnupg ripgrep fd tmux xclip unzip
+      run_as_root pacman -Sy --noconfirm --noprogressbar --needed \
+        bash base-devel git wget curl zsh btop ca-certificates gnupg ripgrep fd tmux xclip unzip
       ;;
   esac
 }

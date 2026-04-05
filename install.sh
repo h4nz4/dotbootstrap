@@ -14,7 +14,9 @@ fi
 main() {
   detect_os
 
-  log "Detected ${BOOTSTRAP_OS_NAME} ${BOOTSTRAP_OS_VERSION:-}"
+  printf '\n'
+  printf '  dotbootstrap · %s %s\n' "$BOOTSTRAP_OS_NAME" "${BOOTSTRAP_OS_VERSION:-}"
+  printf '\n'
 
   case "$BOOTSTRAP_OS_ID" in
     debian|ubuntu)
@@ -34,7 +36,7 @@ main() {
       ;;
   esac
 
-  log "Bootstrap complete"
+  printf '\n  Done.\n\n'
 }
 
 main "$@"

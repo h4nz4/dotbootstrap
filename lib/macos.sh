@@ -1,15 +1,15 @@
 #!/usr/bin/env sh
 
 macos_bootstrap() {
-  macos_install_homebrew
-  macos_install_packages
-  zsh_bootstrap_macos
-  starship_bootstrap_macos
+  run_step "Installing Homebrew" macos_install_homebrew
+  run_step "Installing packages (Homebrew)" macos_install_packages
+  run_step_live "Configuring zsh" zsh_bootstrap_macos
+  run_step "Configuring Starship" starship_bootstrap_macos
   nvim_bootstrap_macos
-  uv_bootstrap_macos
-  nvm_bootstrap_macos
+  run_step "Configuring uv" uv_bootstrap_macos
+  run_step "Configuring nvm" nvm_bootstrap_macos
   docker_bootstrap_macos
-  config_bootstrap_macos
+  run_step "Linking configuration files" config_bootstrap_macos
 }
 
 macos_install_homebrew() {

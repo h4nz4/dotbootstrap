@@ -92,6 +92,7 @@ Replace `hanza` with your GitHub owner if different.
 
 ## Notes
 
+- **Installer UI:** On a TTY, each phase shows a short spinner, then `✓` and the step name; command output is hidden unless a step fails (then it is printed). Without a TTY (e.g. some CI), steps log as plain `[bootstrap]` lines. `Configuring zsh` stays “live” so `chsh` warnings still appear.
 - **Linux Neovim:** installs the latest **GitHub release** tarball (`nvim-linux-x86_64` or `nvim-linux-arm64`), not the distro package. Requires `curl` and a working GitHub API/download path; heavy anonymous API use can hit rate limits.
 - **Docker engine on Linux:** if `docker` is missing, the script runs the official `get.docker.com` installer (not part of the distro package list above).
 
