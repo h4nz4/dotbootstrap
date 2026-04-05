@@ -77,6 +77,7 @@ Replace `hanza` with your GitHub owner if different.
 ## Configured out of the box
 
 - `zsh` as the default shell when possible
+- `C.UTF-8` locale defaults in `~/.zshrc` for correct Unicode width handling in tmux and Starship
 - Starship prompt in `~/.zshrc`
 - `~/.config/starship.toml`
 - `~/.config/nvim/init.lua`

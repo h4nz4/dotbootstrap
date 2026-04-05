@@ -7,6 +7,7 @@ macos_bootstrap() {
   run_step "Configuring Starship" starship_bootstrap_macos
   nvim_bootstrap_macos
   run_step "Configuring uv" uv_bootstrap_macos
+  run_step "Configuring zoxide" zoxide_bootstrap_macos
   run_step "Configuring nvm" nvm_bootstrap_macos
   docker_bootstrap_macos
   run_step "Linking configuration files" config_bootstrap_macos
@@ -24,7 +25,7 @@ macos_install_homebrew() {
 }
 
 macos_install_packages() {
-  run brew install git wget curl zsh btop ripgrep fd tmux xclip unzip ca-certificates starship neovim uv nvm
+  run brew install git wget curl zsh btop ripgrep fd tmux xclip unzip ca-certificates starship neovim uv nvm jq
 }
 
 zsh_bootstrap_macos() {
@@ -41,6 +42,13 @@ nvim_bootstrap_macos() {
 
 uv_bootstrap_macos() {
   ensure_line "$HOME/.zshrc" 'export PATH="$HOME/.local/bin:$PATH"'
+}
+
+zoxide_bootstrap_macos() {
+  if ! have zoxide; then
+    run sh -c "curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh"
+  fi
+  ensure_line "$HOME/.zshrc" 'eval "$(zoxide init zsh)"'
 }
 
 nvm_bootstrap_macos() {

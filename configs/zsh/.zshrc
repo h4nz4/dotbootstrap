@@ -1,5 +1,7 @@
 export EDITOR=nvim
 export VISUAL=nvim
+export LANG=C.UTF-8
+export LC_ALL=C.UTF-8
 
 # useful zsh aliases
 alias cls='clear'
@@ -24,3 +26,5 @@ alias gl='git log --oneline --graph --decorate --all'
 alias gd='git diff'
 alias gco='git checkout'
 alias gb='git branch'
+
+eval "$(zoxide init zsh)"

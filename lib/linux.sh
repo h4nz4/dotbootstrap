@@ -6,6 +6,7 @@ linux_bootstrap() {
   run_step "Installing Starship" starship_bootstrap
   run_step "Installing Neovim" nvim_bootstrap
   run_step "Installing uv" uv_bootstrap
+  run_step "Installing zoxide" zoxide_bootstrap
   run_step "Installing nvm" nvm_bootstrap
   run_step "Installing Docker" docker_bootstrap_linux
   run_step "Linking configuration files" config_bootstrap
@@ -16,11 +17,11 @@ linux_install_base_packages() {
     debian|ubuntu)
       run_as_root env DEBIAN_FRONTEND=noninteractive apt-get -qq update
       run_as_root env DEBIAN_FRONTEND=noninteractive apt-get -qq install -y \
-        bash build-essential git wget curl zsh btop ca-certificates gnupg ripgrep fd-find tmux xclip unzip
+        bash build-essential git wget curl zsh btop ca-certificates gnupg ripgrep fd-find tmux xclip unzip jq
       ;;
     arch)
       run_as_root pacman -Sy --noconfirm --noprogressbar --needed \
-        bash base-devel git wget curl zsh btop ca-certificates gnupg ripgrep fd tmux xclip unzip
+        bash base-devel git wget curl zsh btop ca-certificates gnupg ripgrep fd tmux xclip unzip jq
       ;;
   esac
 }
@@ -92,6 +93,13 @@ uv_bootstrap() {
     run sh -c "curl -LsSf https://astral.sh/uv/install.sh | sh"
   fi
   ensure_line "$HOME/.zshrc" 'export PATH="$HOME/.local/bin:$PATH"'
+}
+
+zoxide_bootstrap() {
+  if ! have zoxide; then
+    run sh -c "curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh"
+  fi
+  ensure_line "$HOME/.zshrc" 'eval "$(zoxide init zsh)"'
 }
 
 nvm_bootstrap() {
