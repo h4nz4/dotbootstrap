@@ -46,26 +46,34 @@ run_step() {
       done
     ) &
     step_sp=$!
-    if "$@" >"$step_tmp" 2>&1; then
-      kill "$step_sp" 2>/dev/null
-      wait "$step_sp" 2>/dev/null
+    trap "kill $step_sp 2>/dev/null; wait $step_sp 2>/dev/null; _bootstrap_clear_line; printf '\n' >&2; exit 130" INT
+    trap "kill $step_sp 2>/dev/null; wait $step_sp 2>/dev/null; _bootstrap_clear_line; printf '\n' >&2; exit 143" TERM
+    # Subshell: install.sh uses set -e, so failures must not abort before we print logs.
+    ( "$@" ) >"$step_tmp" 2>&1
+    step_ec=$?
+    kill "$step_sp" 2>/dev/null
+    wait "$step_sp" 2>/dev/null
+    trap - INT TERM
+    if [ "$step_ec" -eq 0 ]; then
       _bootstrap_clear_line
       printf '\r  ✓ %s\n' "$step_msg"
       rm -f "$step_tmp"
     else
-      kill "$step_sp" 2>/dev/null
-      wait "$step_sp" 2>/dev/null
       _bootstrap_clear_line
+      printf '\r  ✗ %s\n' "$step_msg" >&2
       cat "$step_tmp" >&2
       rm -f "$step_tmp"
       die "Failed: $step_msg"
     fi
   else
     printf '%s\n' "[bootstrap] $step_msg …"
-    if "$@" >"$step_tmp" 2>&1; then
+    ( "$@" ) >"$step_tmp" 2>&1
+    step_ec=$?
+    if [ "$step_ec" -eq 0 ]; then
       printf '%s\n' "[bootstrap] done: $step_msg"
       rm -f "$step_tmp"
     else
+      printf '[bootstrap] error: %s failed (exit %s). Output:\n' "$step_msg" "$step_ec" >&2
       cat "$step_tmp" >&2
       rm -f "$step_tmp"
       die "Failed: $step_msg"
@@ -77,7 +85,13 @@ run_step_live() {
   step_msg=$1
   shift
   printf '%s\n' "  → $step_msg"
-  "$@" || die "Failed: $step_msg"
+  set +e
+  "$@"
+  step_ec=$?
+  set -e
+  if [ "$step_ec" -ne 0 ]; then
+    die "Failed: $step_msg (exit $step_ec)"
+  fi
 }
 
 run() {
