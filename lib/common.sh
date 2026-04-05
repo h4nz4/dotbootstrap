@@ -22,6 +22,15 @@ run() {
   "$@"
 }
 
+run_as_root() {
+  log "$*"
+  if [ "$(id -u)" -eq 0 ]; then
+    "$@"
+  else
+    sudo "$@"
+  fi
+}
+
 ensure_line() {
   file=$1
   line=$2

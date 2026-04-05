@@ -14,11 +14,11 @@ linux_bootstrap() {
 linux_install_base_packages() {
   case "$BOOTSTRAP_OS_ID" in
     debian|ubuntu)
-      run sudo apt-get update
-      run sudo apt-get install -y build-essential git wget curl zsh btop ca-certificates gnupg ripgrep fd-find tmux xclip unzip
+      run_as_root apt-get update
+      run_as_root apt-get install -y build-essential git wget curl zsh btop ca-certificates gnupg ripgrep fd-find tmux xclip unzip
       ;;
     arch)
-      run sudo pacman -Sy --noconfirm --needed base-devel git wget curl zsh btop ca-certificates gnupg ripgrep fd tmux xclip unzip
+      run_as_root pacman -Sy --noconfirm --needed base-devel git wget curl zsh btop ca-certificates gnupg ripgrep fd tmux xclip unzip
       ;;
   esac
 }
@@ -58,10 +58,10 @@ nvim_install_linux_latest() {
 
   run curl -fsSL "$asset_url" -o "$archive"
   run tar -C "$tmpdir" -xzf "$archive"
-  sudo mkdir -p /opt/nvim
-  sudo rm -rf /opt/nvim/*
-  sudo cp -R "$tmpdir"/nvim-linux64/* /opt/nvim/
-  sudo ln -sf /opt/nvim/bin/nvim /usr/local/bin/nvim
+  run_as_root mkdir -p /opt/nvim
+  run_as_root rm -rf /opt/nvim/*
+  run_as_root cp -R "$tmpdir"/nvim-linux64/* /opt/nvim/
+  run_as_root ln -sf /opt/nvim/bin/nvim /usr/local/bin/nvim
   rm -rf "$tmpdir"
 }
 
