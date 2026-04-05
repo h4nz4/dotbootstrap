@@ -12,9 +12,9 @@ jobs:
       - name: Install ShellCheck
         run: sudo apt-get update && sudo apt-get install -y shellcheck shfmt
       - name: Lint scripts
-        run: shellcheck install.sh lib/*.sh tests/*.sh
+        run: shellcheck install.sh bootstrap.sh lib/*.sh tests/*.sh
       - name: Format check
-        run: shfmt -d install.sh lib/*.sh tests/*.sh
+        run: shfmt -d install.sh bootstrap.sh lib/*.sh tests/*.sh
 
   tests-linux-debian:
     runs-on: ubuntu-latest

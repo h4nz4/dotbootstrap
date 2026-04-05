@@ -10,6 +10,7 @@
 
 <p align="center">
   <a href="#usage">Usage</a> ·
+  <a href="#one-liner-hosting-caddy">One-liner hosting</a> ·
   <a href="#what-it-installs">What it installs</a> ·
   <a href="#configured-out-of-the-box">Configured out of the box</a> ·
   <a href="#ci">CI</a> ·
@@ -26,9 +27,37 @@ dotbootstrap gives you a clean, repeatable way to set up a development machine w
 
 ## Usage
 
+**Remote one-liner** (downloads this repo from public GitHub, then runs `install.sh`):
+
 ```sh
-curl -sS https://sh.hanza.cc | sh
+curl -sSL https://sh.hanza.cc | sh
 ```
+
+**Local clone** (after `git clone`):
+
+```sh
+sh install.sh
+```
+
+**Environment variables** (optional, for the remote one-liner):
+
+| Variable | Default | Meaning |
+| -------- | ------- | ------- |
+| `BOOTSTRAP_REPO` | `hanza/dotbootstrap` | `owner/repo` for the GitHub archive |
+| `BOOTSTRAP_REF` | `main` | Git branch name (`refs/heads/...` archive; not a tag) |
+| `BOOTSTRAP_HOME` | `$HOME/.local/share/dotbootstrap` | Install tree; **wiped and replaced** on each run |
+
+## One-liner hosting (Caddy)
+
+Point your short URL at **`bootstrap.sh`**, not `install.sh`. Example for `main`:
+
+```caddy
+sh.hanza.cc {
+    redir https://raw.githubusercontent.com/hanza/dotbootstrap/main/bootstrap.sh 308
+}
+```
+
+Replace `hanza` with your GitHub owner if different.
 
 ## What it installs
 
@@ -46,6 +75,7 @@ curl -sS https://sh.hanza.cc | sh
 
 ## Included files
 
+- `bootstrap.sh` for GitHub archive download + running `install.sh` from a persistent directory
 - `install.sh` for bootstrap orchestration
 - `lib/` for shared platform helpers
 - `configs/` for shell and editor defaults

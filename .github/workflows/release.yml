@@ -13,7 +13,7 @@ jobs:
       - name: Create release bundle
         run: |
           mkdir -p dist
-          cp install.sh dist/
+          cp install.sh bootstrap.sh dist/
           cp -R lib dist/
           cp -R configs dist/
           cp README.md dist/
