@@ -70,4 +70,4 @@ Tagged pushes create a tarball bundle with the bootstrap script, library, config
 
 ## License
 
-Add your license here if you want the repository to show a clear reuse policy.
+[WTFPL](https://en.wikipedia.org/wiki/WTFPL) — see [`LICENSE`](LICENSE).
