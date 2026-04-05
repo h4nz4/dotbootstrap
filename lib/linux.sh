@@ -47,9 +47,29 @@ nvim_bootstrap() {
 }
 
 nvim_install_linux_latest() {
+  case $(uname -m) in
+    x86_64 | amd64)
+      nvim_tar_name=nvim-linux-x86_64.tar.gz
+      nvim_unpack_dir=nvim-linux-x86_64
+      ;;
+    aarch64 | arm64)
+      nvim_tar_name=nvim-linux-arm64.tar.gz
+      nvim_unpack_dir=nvim-linux-arm64
+      ;;
+    *)
+      die "Unsupported architecture for Neovim: $(uname -m)"
+      ;;
+  esac
+
   tmpdir=$(mktemp -d)
   archive="$tmpdir/nvim.tar.gz"
-  asset_url=$(curl -fsSL https://api.github.com/repos/neovim/neovim/releases/latest | sed -n 's/.*"browser_download_url": *"\([^"]*linux64.tar.gz\)".*/\1/p' | head -n 1)
+  asset_url=$(
+    curl -fsSL https://api.github.com/repos/neovim/neovim/releases/latest |
+      grep "browser_download_url" |
+      grep -F "$nvim_tar_name" |
+      head -n 1 |
+      sed 's/.*"browser_download_url": "//;s/".*//'
+  )
 
   if [ -z "$asset_url" ]; then
     rm -rf "$tmpdir"
@@ -60,7 +80,7 @@ nvim_install_linux_latest() {
   run tar -C "$tmpdir" -xzf "$archive"
   run_as_root mkdir -p /opt/nvim
   run_as_root rm -rf /opt/nvim/*
-  run_as_root cp -R "$tmpdir"/nvim-linux64/* /opt/nvim/
+  run_as_root cp -R "$tmpdir/$nvim_unpack_dir"/* /opt/nvim/
   run_as_root ln -sf /opt/nvim/bin/nvim /usr/local/bin/nvim
   rm -rf "$tmpdir"
 }
